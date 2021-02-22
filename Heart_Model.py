@@ -64,23 +64,23 @@ def main():
         age= left_column.number_input('Age in Figures',value= int(5), min_value = 5, max_value= 130)
 
         df = pipelines(age, sex, rest_bp, cholesterol, max_hr, chest_pain, thal, rest_ecg)
-        st.dataframe(df)
+        # st.dataframe(df)
 
         model_name = 'Heart_Pred_model'
         model = pickle.load(open(model_name, 'rb'))
 
         diagnosis = st.button('Diagnosis')
         if diagnosis:
-            prediction = np.array_str(model.predict(df))
+            prediction = model.predict(df)
             # prediction_integer = "".join(prediction)
             prediction_proba = model.predict_proba(df)[:,0]
             # prediction_proba_integer = "".join(prediction_proba)
 
-            st.write(f"Your Diagnosis result return {prediction} with a {prediction_proba}")
+            st.write(f"Your Diagnosis result return {np.array_str(prediction)} with a {prediction_proba} Accuracy")
 
             if prediction == ['Disease']:
                 option = st.selectbox('Who would you like us to contact?',
-                ('Your Pastor/Alfa', 'Husband/wife', 'Friend', 'No One'))
+                ('No One', 'Your Pastor/Alfa', 'Husband/wife', 'Friend'))
                 if option == 'No One':
                     st.write('Take Good care of yourself and stay Blessed')
                 else:
@@ -88,12 +88,13 @@ def main():
                     calling = st.empty()
                     bar = st.progress(0)
 
-                    for i in range(50):
+                    for i in range(100):
                       # Update the progress bar with each iteration.
                       calling.text(f'Calling {option}')
                       bar.progress(i + 1)
                       time.sleep(0.2)
                     st.write('Contact Made have a nice day')
+            else: st.balloons(); st.success('## Congratulations **:joy:**')
     else:
         st.write("## Thank You for Visiting")
 
